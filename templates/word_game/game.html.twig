@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Word Game - DDD{% endblock %}
+
+{% block body %}
+<div class="example-wrapper">
+    <h1>Word Game - DDD</h1>
+
+    {{ include('word_game/_form.html.twig') }}
+
+    <div style="padding: 50px 0 50px 0;">
+        {% if submited_word is defined and submited_word is not empty %}
+            <div>
+                <p>Submited word is: {{ submited_word }}</p>
+            </div>
+            {% if length_points is defined and length_points is not empty %}
+                <div>
+                    <p>Length points: {{ length_points }}</p>
+                </div>
+            {% endif %}
+            {% if extra_points is defined and extra_points is not empty and extra_points is same as 'yes' %}
+                <div>
+                    <p>Well done, for new word you deserved extra points!</p>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <a href="{{ path('word_game_homepage') }}">Reopen page</a>
+    </div>
+</div>
+{% endblock %}
