@@ -41,7 +41,59 @@ class Word
         return $this;
     }
 
+    /**
+     * Checks word equality.
+     * 
+     * @return bool
+     */
+    public function equals(Word $word): bool
+    {
+        return $word->getWord() === $this->word;
+    }
 
+    /**
+     * Check if word is AlmostPalindrome.
+     * 
+     * @return bool
+     */
+    public function checkAlmostPalindrome(): bool
+    {
+        for ($i = 0; $i < strlen($this->word); $i++) {
+            $wordToCheck = substr_replace($this->word, '', $i, 1);
+
+            if ($this->checkPalindrome($wordToCheck)) {
+                return TRUE;
+            }
+        }
+
+        return FALSE;
+    }
+
+    /**
+     * Check if word is palindrome.
+     * 
+     * @param string $recursionWord
+     * @return bool
+     */
+    public function checkPalindrome(string $recursionWord = ''): bool
+    {
+        $wordToCheck = $recursionWord ?: $this->word;
+
+        if ((strlen($wordToCheck) == 1) || (strlen($wordToCheck) == 0)){
+            return TRUE;
+        } else {
+            if (substr($wordToCheck, 0, 1) == substr($wordToCheck, (strlen($wordToCheck) - 1), 1)) {
+                $wordLen = strlen(substr($wordToCheck, 1, strlen($wordToCheck) - 2));
+                if ($wordLen == 1 || $wordLen == 0) {
+                    return TRUE;
+                }
+
+                return $this->checkPalindrome(substr($wordToCheck, 1, strlen($wordToCheck) - 2));
+            } else {
+                return FALSE;
+            }
+        }
+    }
 
     /**
      * @return string

@@ -159,12 +159,12 @@ class Game
     public function calculatePoints(): void
     {
         $points = strlen(count_chars($this->wordContent, 3));
-        $isPalindrome = $this->checkPalindrome();
+        $isPalindrome = $this->word->checkPalindrome();
 
         if ($isPalindrome) {
             $points += self::PALINDROME_POINTS;
         } else {
-            $isAlmostPalindrome = $this->checkAlmostPalindrome();
+            $isAlmostPalindrome = $this->word->checkAlmostPalindrome();
 
             if ($isAlmostPalindrome) {
                 $points += self::ALMOST_PALINDROME_POINTS;
@@ -174,43 +174,4 @@ class Game
         $this->points = $points;
     }
 
-    /**
-     * @return bool
-     */
-    public function checkAlmostPalindrome(): bool
-    {
-        for ($i = 0; $i < strlen($this->wordContent); $i++) {
-            $wordToCheck = substr_replace($this->wordContent, '', $i, 1);
-
-            if ($this->checkPalindrome($wordToCheck)) {
-                return TRUE;
-            }
-        }
-
-        return FALSE;
-    }
-
-    /**
-     * @param string $recursionWord
-     * @return bool
-     */
-    public function checkPalindrome(string $recursionWord = ''): bool
-    {
-        $wordToCheck = $recursionWord ?: $this->wordContent;
-
-        if ((strlen($wordToCheck) == 1) || (strlen($wordToCheck) == 0)){
-            return TRUE;
-        } else {
-            if (substr($wordToCheck, 0, 1) == substr($wordToCheck, (strlen($wordToCheck) - 1), 1)) {
-                $wordLen = strlen(substr($wordToCheck, 1, strlen($wordToCheck) - 2));
-                if ($wordLen == 1 || $wordLen == 0) {
-                    return TRUE;
-                }
-
-                return $this->checkPalindrome(substr($wordToCheck, 1, strlen($wordToCheck) - 2));
-            } else {
-                return FALSE;
-            }
-        }
-    }
 }
