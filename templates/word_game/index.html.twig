@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Word and Points{% endblock %}
+
+{% block body %}
+    <h1>Word index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Word</th>
+                <th>Points</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for word in words %}
+            <tr>
+                <td>{{ word.gameId }}</td>
+                <td>{{ word.wordContent }}</td>
+                <td>{{ word.points }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        <a href="{{ path('word_game_homepage') }}">Check word</a>
+    </div>
+{% endblock %}

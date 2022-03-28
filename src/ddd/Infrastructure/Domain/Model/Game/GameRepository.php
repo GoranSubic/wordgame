@@ -39,6 +39,22 @@ class GameRepository extends ServiceEntityRepository implements DomainGameReposi
         return $query->execute();
     }
 
+    public function findAllWords(): array
+    {
+        $qb = $this->createQueryBuilder('g');
+
+        $qb
+            ->select('g.gameId', 'g.wordContent', 'g.points')
+            ->orderBy('g.wordContent', 'ASC')
+            ->getQuery()
+            ->getResult()
+            ;
+
+        $query = $qb->getQuery();
+
+        return $query->execute();
+    }
+
     /**
      * @param GameId $gameId
      * @return Game

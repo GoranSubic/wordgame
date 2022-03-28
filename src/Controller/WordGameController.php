@@ -69,4 +69,12 @@ class WordGameController extends AbstractController
         ]);
     }
 
+    #[Route('/words', name: 'word_game_index', methods: ['GET', 'POST'])]
+    public function words(InfraGameRepository $gameRepository): Response
+    {
+        return $this->render('word_game/index.html.twig', [
+            'words' => $gameRepository->findAllWords(),
+        ]);
+    }
+
 }
