@@ -31,6 +31,11 @@ interface GameRepository
     public function findByWord(string $word): array;
 
     /**
+     * @return array
+     */
+    public function findAllWords(): array;
+
+    /**
      * @param Game $game
      */
     public function add(Game $game);

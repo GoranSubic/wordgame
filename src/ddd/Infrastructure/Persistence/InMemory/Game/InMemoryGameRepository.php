@@ -29,6 +29,19 @@ class InMemoryGameRepository implements GameRepository
         return $return;
     }
 
+    public function findAllWords(): array
+    {
+        $return = [];
+        foreach ($this->games as $game) {
+            $return = [
+                'gameId' => $game->getId()->id(),
+                'wordContent' => $game->getWordContent(),
+                'points' => $game->getPoints(),
+            ];
+        }
+        return $return;
+    }
+
     /**
      * @param GameId $gameId
      * @return Game

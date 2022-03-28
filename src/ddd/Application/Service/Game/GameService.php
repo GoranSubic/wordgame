@@ -4,6 +4,7 @@ namespace App\ddd\Application\Service\Game;
 
 use App\ddd\Application\DataTransformer\Game\GameDataTransformer;
 use App\ddd\Application\Service\ApplicationService;
+use App\ddd\Application\Service\CacheInterface;
 use App\ddd\Application\Service\DictionaryService;
 use App\ddd\Domain\Model\Game\Game;
 use App\ddd\Domain\Model\Game\GameId;
@@ -15,16 +16,19 @@ class GameService implements ApplicationService
     private GameRepository $gameRepository;
     private GameDataTransformer $gameDataTransformer;
     private DictionaryService $dictionaryService;
+    private CacheInterface $cache;
 
     public function __construct(
         GameRepository $gameRepository,
         GameDataTransformer $gameDataTransformer,
-        DictionaryService $dictionaryService
+        DictionaryService $dictionaryService,
+        CacheInterface $cache
     )
     {
         $this->gameRepository = $gameRepository;
         $this->gameDataTransformer = $gameDataTransformer;
         $this->dictionaryService = $dictionaryService;
+        $this->cache = $cache;
     }
 
     /**
@@ -33,6 +37,7 @@ class GameService implements ApplicationService
      */
     public function execute($wordToCheck = NULL): mixed
     {
+        $cache = $this->cache->cache;
         $questWord = $wordToCheck->getWord();
 
         $existingWord = $this->gameRepository->findByWord($questWord);
@@ -51,6 +56,9 @@ class GameService implements ApplicationService
 
                 // Save game to DB.
                 $this->gameRepository->add($game);
+
+                // Invalidate/remove cache item 'game.count_words'
+                $cache->deleteItem('game.count_words');
 
                 $game->setIsExisting(GameStatus::New);
             }

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\ddd\Application\DataTransformer\Game\GameDtoDataTransformer;
+use App\ddd\Application\Service\FilesystemAdapterCache;
 use App\ddd\Application\Service\Game\GameService;
 use App\ddd\Application\Service\Game\WordRequest;
 use App\ddd\Application\Service\PspellDictionaryService;
@@ -27,7 +28,8 @@ class WordGameController extends AbstractController
         InfraGameRepository $gameRepository,
         GameDtoDataTransformer $gameDtoDataTransformer,
         PspellDictionaryService $dictionaryService,
-        DoctrineSession $doctrineSession
+        DoctrineSession $doctrineSession,
+        FilesystemAdapterCache $cache
     ): Response
     {
         $gameArr = [];
@@ -49,7 +51,7 @@ class WordGameController extends AbstractController
                 return $this->redirectToRoute('word_game_homepage', [], Response::HTTP_SEE_OTHER);
             }
 
-            $gameService = new GameService($gameRepository, $gameDtoDataTransformer, $dictionaryService);
+            $gameService = new GameService($gameRepository, $gameDtoDataTransformer, $dictionaryService, $cache);
             $txAppService = new TransactionalApplicationService($gameService, $doctrineSession);
             $gameArr = $txAppService->execute(
                 new WordRequest($word)
@@ -70,10 +72,20 @@ class WordGameController extends AbstractController
     }
 
     #[Route('/words', name: 'word_game_index', methods: ['GET', 'POST'])]
-    public function words(InfraGameRepository $gameRepository): Response
+    public function words(InfraGameRepository $gameRepository, FilesystemAdapterCache $cache): Response
     {
+        $words = $gameRepository->findAllWords();
+
+        $cache = $cache->cache;
+        $countWords = $cache->getItem('game.count_words');
+        if (!$countWords->isHit()) {
+            $countWords->set(count($words));
+            $cache->save($countWords);
+        }
+
         return $this->render('word_game/index.html.twig', [
-            'words' => $gameRepository->findAllWords(),
+            'words' => $words,
+            'count_words' => $countWords->get(),
         ]);
     }
 
