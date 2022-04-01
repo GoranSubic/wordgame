@@ -37,7 +37,7 @@ class GameService implements ApplicationService
      */
     public function execute($wordToCheck = NULL): mixed
     {
-        $cache = $this->cache->cache;
+        $cache = $this->cache;
         $questWord = $wordToCheck->getWord();
 
         $existingWord = $this->gameRepository->findByWord($questWord);
@@ -58,7 +58,8 @@ class GameService implements ApplicationService
                 $this->gameRepository->add($game);
 
                 // Invalidate/remove cache item 'game.count_words'
-                $cache->deleteItem('game.count_words');
+                // $cache->deleteItem('game.count_words');
+                $cache->deleteCacheItem('game.count_words');
 
                 $game->setIsExisting(GameStatus::New);
             }

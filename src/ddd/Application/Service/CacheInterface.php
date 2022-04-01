@@ -2,4 +2,6 @@
 
 namespace App\ddd\Application\Service;
 
-interface CacheInterface {}
+interface CacheInterface {
+  public function deleteCacheItem(string $item);
+}

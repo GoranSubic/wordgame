@@ -15,4 +15,9 @@ class FilesystemAdapterCache implements CacheInterface
   {
     $this->cache = new FilesystemAdapter();
   }
+
+  public function deleteCacheItem(string $item)
+  {
+    $this->cache->deleteItem($item);
+  }
 }
